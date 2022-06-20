@@ -21,17 +21,26 @@ Het aanpassen van het configuratie bestand gaat op de volgende manier
 
 #### Settings
 •	‘Checkinterval’ geeft het aantal secondes aan waarin de check worden uitgevoerd. 
+
 •	‘Timeout’ is het aantal keer dat de server gaat proberen de check uit te voeren voordat hij aan zal geven dat het niet bereikbaar is. 
+
 •	‘maxConnections’ staat voor het maximale aantal connecties dat de monitor goedkeurt. 
+
 •	‘exponentialBackoffSeconds’ zijn het aantal secondes die het programma toevoegt zodra deze een fout tegenkomt. Dus zodra 1 foutmelding optreed doet hij vijf seconde voordat hij het opnieuw probeert. Gebeurd dit nogmaals voegt hij nogmaals vijf seconde toe dus wacht hij tien seconde
 
 #### Servers
 Bij het kopje daaronder (Servers) kunnen server toegevoegd kunnen worden die gecheckt moeten worden. 
+
 •	Bij ‘name’ geef je de titel op die op de website weergegeven moet worden.
+
 •	‘IpAddress’ is het ip waarop de server of services bereikbaar is.
+
 •	‘port’ is de poort waarop er gecontroleerd moet worden.
+
 •	‘protocol’ is het protocol waarmee de checks worden uitgevoerd.
+
 •	‘checkInterval’ per server kan je nogmaals aangeven bij welke interval gecontroleerd word.
+
 •	‘timeout’ staat voor het aantal pogingen dat de server zal doen om te controleren of het apparaat beschikbaar is.
 
 

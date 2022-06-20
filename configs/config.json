@@ -1,0 +1,52 @@
+{
+    "settings": {
+        "monitor": {
+            "checkInterval": 30,   
+            "timeout": 5,
+            "maxConnections": 50,
+            "exponentialBackoffSeconds": 5
+        }
+    },
+"servers": [
+{
+"name":"Extern - Google",
+"ipAddress":"8.8.8.8",
+"port": 80,
+"protocol": "tcp",
+"checkInterval": 5,
+"timeout": 5
+},
+{
+"name":"CH_RT01",
+"ipAddress":"10.20.0.1",
+"port": 80,
+"protocol": "tcp",
+"checkInterval": 5,
+"timeout": 5
+},
+{
+"name":"CH_AD01",
+"ipAddress":"10.10.0.10",
+"port": 80,
+"protocol": "tcp",
+"checkInterval": 5,
+"timeout": 5
+},
+{
+"name":"CH_APP01",
+"ipAddress":"10.10.0.12",
+"port": 80,
+"protocol": "tcp",
+"checkInterval": 5,
+"timeout": 5
+},
+{
+"name":"CH_BP01",
+"ipAddress":"10.10.0.11",
+"port": 80,
+"protocol": "udp",
+"checkInterval": 5,
+"timeout": 5
+}
+]
+}

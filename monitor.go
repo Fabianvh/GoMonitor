@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"git.fhict.nl/I475743/i-db2-2223vj-monitoring-tool/dial"
+	"github.com/ssimunic/gossm/dial"
 	"github.com/ssimunic/gossm/logger"
 	"github.com/ssimunic/gossm/notify"
 	"github.com/ssimunic/gossm/track"

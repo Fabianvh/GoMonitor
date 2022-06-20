@@ -4,13 +4,13 @@ import (
 	"time"
 )
 
-// NetAddress is transport unit for Dialer
+// Struct word gebruikt voor het transporteren van informatie richting de dialer
 type NetAddress struct {
 	Network string
 	Address string
 }
 
-// NetAddressTimeout is tuple of NetAddress and attached Timeout
+// NetAddressTimeout is een NetAdress voor Timeouts
 type NetAddressTimeout struct {
 	NetAddress
 	Timeout time.Duration

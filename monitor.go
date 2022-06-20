@@ -18,24 +18,20 @@ type Monitor struct {
 	// Checker voor checks de servers
 	checkerCh chan *Server
 
-	// Notification methods used to send messages when server can't be reached
-	//
+	// Ongebruikte functie voor het versturen van notifcaties, Notifcatie uit de code gebouwd. enkel krijg ik deze niet uit de code zonder andere functies onwerkbaar te krijgen.
 	notifiers notify.Notifiers
 
-	// Channel used for receive servers that couldn't be reached
+	// Notifier voor het aangeven van server die niet beschikbaar zijn
 	notifierCh chan *Server
 
-	// To reduce notification spam, tracker is used to delay notifications
+	// Ook voor de notifier functie, funcitie word gebruikt om spam te voorkomen. Geeft delay op de notificer.
 	notificationTracker map[*Server]*track.TimeTracker
 
-	// Used to test connections
+	// Gebruikt voor het testen van de connecties richting de gecontroleerde servers
 	dialer *dial.Dialer
 
-	// Sending to stop channel makes program exit
+	// Gebruikt dit channel voor het stoppen van de code
 	stop chan struct{}
-
-	// TODO: For each server, keep map with time and up/down status
-	serverStatusData *ServerStatusData
 }
 
 func NewMonitor(c *Config) *Monitor {
@@ -47,14 +43,13 @@ func NewMonitor(c *Config) *Monitor {
 		notificationTracker: make(map[*Server]*track.TimeTracker),
 		dialer:              dial.NewDialer(c.Settings.Monitor.MaxConnections),
 		stop:                make(chan struct{}),
-		serverStatusData:    NewServerStatusData(c.Servers),
 	}
 	m.initialize()
 	return m
 }
 
 func (m *Monitor) initialize() {
-	// Initialize notification methods to reduce overhead
+	// Initaliseert notifcatie methodes, ongebruikt
 	for _, notifier := range m.notifiers {
 		if initializer, ok := notifier.(notify.Initializer); ok {
 			logger.Logln("Initializing", initializer)
@@ -63,10 +58,10 @@ func (m *Monitor) initialize() {
 	}
 
 	for _, server := range m.config.Servers {
-		// Initialize notificationTracker
+		// Initaliseert notifactietracker, ongebruikt
 		m.notificationTracker[server] = NewTrackerWithExpBackoff(m.config.Settings.Monitor.ExponentialBackoffSeconds)
 
-		// Set default CheckInterval and Timeout for servers who miss them
+		// Set standaard checkinterval and timeoutinterval voor de servers
 		switch {
 		case server.CheckInterval <= 0:
 			server.CheckInterval = m.config.Settings.Monitor.CheckInterval
@@ -76,17 +71,17 @@ func (m *Monitor) initialize() {
 	}
 }
 
-// NewTrackerWithExpBackoff creates TimeTracker with ExpBackoff as Delayer
+// Functie creeert een tracker met tijd als delayer
 func NewTrackerWithExpBackoff(expBackoffSeconds int) *track.TimeTracker {
 	return track.NewTracker(track.NewExpBackoff(expBackoffSeconds))
 }
 
-// Run runs monitor infinitely
+// Draait de monitoring voor altijd zonder onderbrekingen
 func (m *Monitor) Run() {
 	m.RunForSeconds(0)
 }
 
-// RunForSeconds runs monitor for runningSeconds seconds or infinitely if 0 is passed as an argument
+// Draait de code met runforseconds of voor altijd als 0 is gegeven als argument
 func (m *Monitor) RunForSeconds(runningSeconds int) {
 	if runningSeconds != 0 {
 		go func() {
@@ -105,10 +100,9 @@ func (m *Monitor) RunForSeconds(runningSeconds int) {
 }
 
 func (m *Monitor) scheduleServer(s *Server) {
-	// Initial
 	m.checkerCh <- s
 
-	// Periodic
+	// Geeft periode aan
 	tickerSeconds := time.NewTicker(time.Duration(s.CheckInterval) * time.Second)
 	for range tickerSeconds.C {
 		m.checkerCh <- s
@@ -119,7 +113,7 @@ func (m *Monitor) monitor() {
 	go m.listenForChecks()
 	go m.listenForNotifications()
 
-	// Wait for termination signal then exit monitor
+	// Wacht voor foutmelding en sluit daarna code af
 	<-m.stop
 	logger.Logln("Terminating.")
 	os.Exit(0)
@@ -144,7 +138,7 @@ func (m *Monitor) listenForNotifications() {
 }
 
 func (m *Monitor) checkServerStatus(server *Server) {
-	// NewWorker() blocks if there aren't free slots in dialer for concurrency
+	// Functie checkt voor vrije plekken in de dail functie
 	worker, output := m.dialer.NewWorker()
 	go func() {
 		logger.Logln("Checking", server)
@@ -154,9 +148,7 @@ func (m *Monitor) checkServerStatus(server *Server) {
 		worker <- dial.NetAddressTimeout{NetAddress: dial.NetAddress{Network: server.Protocol, Address: formattedAddress}, Timeout: timeoutSeconds}
 		dialerStatus := <-output
 
-		m.serverStatusData.SetStatusAtTimeForServer(server, time.Now(), dialerStatus.Ok)
-
-		// Handle error
+		// Error handeling
 		if !dialerStatus.Ok {
 			logger.Logln(dialerStatus.Err)
 			logger.Logln("ERROR", server)
@@ -166,9 +158,9 @@ func (m *Monitor) checkServerStatus(server *Server) {
 			return
 		}
 
-		// Handle success
+		// Logger start
 		logger.Logln("OK", server)
-		// Reset time tracker for server
+		// Reset tijd voor tracking van de server zelf
 		if m.notificationTracker[server].HasBeenRan() {
 			m.notificationTracker[server] = NewTrackerWithExpBackoff(m.config.Settings.Monitor.ExponentialBackoffSeconds)
 		}

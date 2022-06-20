@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Delayer is used to delay some action
+// Delay functie voor het vertragen van een functie/actie
 type Delayer interface {
 	Delay() time.Duration
 }

@@ -4,26 +4,25 @@ import (
 	"net"
 )
 
-// Dialer is used to test connections
+//Dailer controleerd connecties
 type Dialer struct {
 	semaphore chan struct{}
 }
 
-// Status saves information about connection
+// Struct slaat informatie over de connectie
 type Status struct {
 	Ok  bool
 	Err error
 }
 
-// NewDialer returns pointer to new Dialer
+// NewDialer geeft pointer naar nieuwe dailer
 func NewDialer(concurrentConnections int) *Dialer {
 	return &Dialer{
 		semaphore: make(chan struct{}, concurrentConnections),
 	}
 }
 
-// NewWorker is used to send address over NetAddressTimeout to make request and receive status over DialerStatus
-// Blocks until slot in semaphore channel for concurrency is free
+// Newworker is gebruikt voor het versturen van een address naar NetAddressTimeout voor het maken en ontvangen van de Dialerstatussen
 func (d *Dialer) NewWorker() (chan<- NetAddressTimeout, <-chan Status) {
 	netAddressTimeoutCh := make(chan NetAddressTimeout)
 	dialerStatusCh := make(chan Status)

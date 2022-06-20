@@ -46,7 +46,7 @@ func RunHttp(address string, monitor *Monitor) { //Start index.html vanuit serve
 		"calculateServerUptime": calculateServerUptime,
 		"lastStatus":            lastStatus,
 	}
-	//HTML code die de ingevoerde servers displayed.
+	//HTML code die de ingevoerde servers displayed. Tevens haalt hij deze van github
 	t := template.Must(template.New("main").Funcs(funcMap).Parse(`<!DOCTYPE html>	
 <html lang="en">
   <head>

@@ -12,7 +12,7 @@ Omdat ik vond dat er functies in de code zaten die ik niet nodig of zelf wou her
 Voor het downloaden van de code
 `#Go get github.com/Fabianvh/GoMonitor`
 
-Deze zal het configuratiefile `configs/myconfig.json` gebruiken.
+Deze zal het configuratiefile `configs/myconfig.json` gebruiken, deze is aan te passen naar onderstaande uitleg over het configuratiebesatnd
 
 Draaien is `#go run .` in de map waar main.go staat
 
